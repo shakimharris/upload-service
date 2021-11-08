@@ -1,9 +1,23 @@
-var http = require("http");
+const express = require("express");
+const bodyParser = require("body-parser");
+const randomBytes = require("randombytes");
 
-//create a server object:
-http
-  .createServer(function(req, res) {
-    res.write("Hello World!"); //write a response to the client
-    res.end(); //end the response
-  })
-  .listen(8080); //the server object listens on port 8080
+
+const app = express();
+const uploads = {};
+app.use(bodyParser.json());
+
+app.get('/uploads', (req, res) => {
+  res.send(uploads);
+} )
+
+app.post('/uploads', (req, res) => {
+const id = randomBytes(4).toString('hex');
+const { title } = req.body;
+
+uploads[id] = {
+  id, title
+}
+res.status(201).send(uploads[id]);
+
+app.listen(8080);
